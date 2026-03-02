@@ -1,20 +1,38 @@
-﻿open System
+open System
+
+let tryParseBinary (input: string) =
+    try
+        let value = Convert.ToInt32(input, 2)
+        if value >= 1 && value <= 9 then Some(value)
+        else None
+    with _ -> None
+
+let rec readValidElements count acc =
+    if count <= 0 then
+        List.rev acc
+    else
+        printf "Введите двоичное число (1-1001), осталось %d: " count
+        let input = Console.ReadLine()
+        match tryParseBinary input with
+        | Some(v) -> readValidElements (count - 1) (v :: acc)
+        | None -> 
+            printfn "Число должно быть двоичным и в диапазоне 1..1001"
+            readValidElements count acc
+
 [<EntryPoint>]
-printf "Вычисление факториала числа\n"
-printf "Введите число - "
-let countInput  = Console.ReadLine()
-
-let rec factorial n=
-    if n <= 1 then 
-        1
-    else 
-        n * factorial (n - 1)
-
-match Int32.TryParse(countInput) with
-| true, n when n >= 0 ->
-    let result = factorial n
-    printfn "Факториал %d равен %d" n result
-| true, _ ->
-    printf "Введено отрицательное число, для него не определён факториал"
-| _ ->
-    printf "Введено некорректное число для вычисления факториала"
+let main _ =
+    printf "Введите количество элементов: "
+    match Int32.TryParse(Console.ReadLine()) with
+    | (true, n) when n > 0 ->
+        let numbers = readValidElements n []
+        
+        // Используем List.fold вместо List.sum
+        // 0 - начальное значение (аккумулятор)
+        // (fun acc x -> acc + x) - функция, которая прибавляет текущий элемент x к аккумулятору
+        let totalSum = numbers |> List.fold (fun acc x -> acc + x) 0
+        
+        printfn "\nВведенные числа (в 10-й системе): %A" numbers
+        printfn "Итоговая сумма: %d" totalSum
+        
+    | _ -> printfn "Некорректный ввод."
+    0
