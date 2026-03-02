@@ -26,9 +26,6 @@ let main _ =
     | (true, n) when n > 0 ->
         let numbers = readValidElements n []
         
-        // Используем List.fold вместо List.sum
-        // 0 - начальное значение (аккумулятор)
-        // (fun acc x -> acc + x) - функция, которая прибавляет текущий элемент x к аккумулятору
         let totalSum = numbers |> List.fold (fun acc x -> acc + x) 0
         
         printfn "\nВведенные числа (в 10-й системе): %A" numbers
@@ -36,3 +33,4 @@ let main _ =
         
     | _ -> printfn "Некорректный ввод."
     0
+
